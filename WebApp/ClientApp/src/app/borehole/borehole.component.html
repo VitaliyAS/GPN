@@ -1,0 +1,66 @@
+<h1>Скважины</h1>
+
+<p *ngIf="!boreholes"><em>Загрузка...</em></p>
+
+<input type="button" value="Добавить" (click)="add()" class="btn btn-primary" />
+<table class='table table-striped' *ngIf="boreholes">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Наименование</th>
+      <th>Глубина</th>
+      <th>Месторождение</th>
+      <th>Цех</th>
+      <th>Компания</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let borehole of boreholes">
+      <ng-template [ngTemplateOutlet]="loadTemplate(borehole)"
+                   [ngTemplateOutletContext]="{ $implicit: borehole}">
+      </ng-template>
+    </tr>
+  </tbody>
+</table>
+<div>{{statusMessage}}</div>
+
+<!--шаблон для чтения-->
+<ng-template #readOnlyTemplate let-borehole>
+  <td>{{ borehole.id }}</td>
+  <td>{{ borehole.name }}</td>
+  <td>{{ borehole.depth }}</td>
+  <td>{{ borehole.fieldEntity.name }}</td>
+  <td>{{ borehole.departmentEntity.name }}</td>
+  <td>{{ borehole.companyEntity.name }}</td>
+  <td><input type="button" value="Изменить" (click)="edit(borehole)" class="btn btn-warning" /></td>
+  <td><input type="button" value="Удалить" (click)="delete(borehole)" class="btn btn-danger" /></td>
+</ng-template>
+
+<!--шаблон для редактирования-->
+<ng-template #editTemplate>
+  <td><input type="text" [(ngModel)]="editedBorehole.id" readonly disabled class="form-control" /></td>
+  <td><input type="text" [(ngModel)]="editedBorehole.name" class="form-control" /></td>
+  <td><input type="text" [(ngModel)]="editedBorehole.depth" class="form-control" /></td>
+  <td>
+    <select [(ngModel)]="editedBorehole.fieldId" class="form-control">
+      <option value="" disabled>Выберите Месторождение</option>
+      <option *ngFor="let field of fields" [ngValue]="field.id">{{ field.name }}</option>
+    </select>
+  </td>
+  <td>
+    <select [(ngModel)]="editedBorehole.departmentId" class="form-control">
+      <option value="" disabled>Выберите Цех</option>
+      <option *ngFor="let department of departments" [ngValue]="department.id">{{ department.name }}</option>
+    </select>
+  </td>
+  <td>
+    <select [(ngModel)]="editedBorehole.companyId" class="form-control">
+      <option value="" disabled>выберите Компанию</option>
+      <option *ngFor="let company of companies" [ngValue]="company.id">{{ company.name }}</option>
+    </select>
+  </td>
+  <td><input type="button" value="Сохранить" (click)="save()" class="btn btn-success" /></td>
+  <td><input type="button" value="Отмена" (click)="cancel()" class="btn btn-warning" /></td>
+</ng-template>

@@ -1,0 +1,42 @@
+<h1>Компании</h1>
+
+<p *ngIf="!companies"><em>Загрузка...</em></p>
+
+<input type="button" value="Добавить" (click)="add()" class="btn btn-primary" />
+<table class='table table-striped' *ngIf="companies">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Наименование</th>
+      <th>Руководитель</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let company of companies">
+      <ng-template [ngTemplateOutlet]="loadTemplate(company)"
+                   [ngTemplateOutletContext]="{ $implicit: company}">
+      </ng-template>
+    </tr>
+  </tbody>
+</table>
+<div>{{statusMessage}}</div>
+
+<!--шаблон для чтения-->
+<ng-template #readOnlyTemplate let-company>
+  <td>{{ company.id }}</td>
+  <td>{{ company.name }}</td>
+  <td>{{ company.boss }}</td>
+  <td><input type="button" value="Изменить" (click)="edit(company)" class="btn btn-warning" /></td>
+  <td><input type="button" value="Удалить" (click)="delete(company)" class="btn btn-danger" /></td>
+</ng-template>
+
+<!--шаблон для редактирования-->
+<ng-template #editTemplate>
+  <td><input type="text" [(ngModel)]="editedCompany.id" readonly disabled class="form-control" /></td>
+  <td><input type="text" [(ngModel)]="editedCompany.name" class="form-control" /></td>
+  <td><input type="text" [(ngModel)]="editedCompany.boss" class="form-control" /></td>
+  <td><input type="button" value="Сохранить" (click)="save()" class="btn btn-success" /></td>
+  <td><input type="button" value="Отмена" (click)="cancel()" class="btn btn-warning" /></td>
+</ng-template>
